@@ -191,4 +191,56 @@ public static class Tools
             Console.WriteLine();
         }
     }
+
+    public static List<(int[,] signal, int errors)> DetectSignal(int[,] matrix)
+    {
+        var result = new List<(int[,] signal, int errors)>();
+        for (int x = 0; x < matrix.GetLength(1); x++)
+        {
+            int[,] test = new int[matrix.GetLength(0), matrix.GetLength(1)];
+            bool detected = true;
+            int errors = 0;
+            // if (matrix[0, x] == 0)
+            // {
+            //    continue;
+            // }
+
+            for (int y = 0; y < matrix.GetLength(0); y++)
+            {
+                int sum = (x <= 0 ? 0 : matrix[y, x - 1])
+                          + matrix[y, x + 0]
+                          + (x >= matrix.GetLength(1) - 1 ? 0 : matrix[y, x + 1]);
+                if (sum > 0)
+                {
+                    if (matrix[y, x - 0] == 0)
+                    {
+                        errors++;
+                    }
+
+                    if (x - 1 >= 0)
+                    {
+                        test[y, x - 1] = matrix[y, x - 1];
+                    }
+
+                    test[y, x + 0] = matrix[y, x + 0];
+                    if (x < matrix.GetLength(1) - 1)
+                    {
+                        test[y, x + 1] = matrix[y, x + 1];
+                    }
+                }
+                else
+                {
+                    detected = false;
+                    break;
+                }
+            }
+
+            if (detected)
+            {
+                result.Add((test, errors));
+            }
+        }
+
+        return result;
+    }
 }
