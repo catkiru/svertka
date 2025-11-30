@@ -37,7 +37,8 @@ public class ConvolutionFixedSize(string inputPath) : IConvolution
 
             Tools.SaveMatrixAsBmp(current, inputPath + $".fixed.{i}.bmp");
             i++;
-            if (Tools.CompareMatrix(current, prev))
+            // if (Tools.CompareMatrix(current, prev))
+            if (true)
             {
                 resultMatrix = current;
                 return true;

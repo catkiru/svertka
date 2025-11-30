@@ -7,6 +7,85 @@ namespace MatrixConvolution;
 
 public static class Tools
 {
+    static List<Rgb24> colorList = [];
+
+    static Tools()
+    {
+        var rnd = new Random();
+        for (int i = 0; i < 200; i++)
+        {
+            colorList.Add(new Rgb24((byte)rnd.Next(100, 200), (byte)rnd.Next(100, 200), (byte)rnd.Next(100, 200)));
+        }
+    }
+
+    public static void SaveMatrixAsBmp(int[,] matrix, List<(int[,] signal, int errors)> signals, string path)
+    {
+        int height = matrix.GetLength(0) + signals.Sum(x => x.signal.GetLength(0));
+        int width = matrix.GetLength(1);
+
+        using var image = new Image<Rgb24>(width, height);
+
+        for (int y = 0; y < matrix.GetLength(0); y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int v = matrix[y, x];
+                image[x, y] = v == 1 ? new Rgb24(0, 0, 0) : new Rgb24(255, 255, 255);
+            }
+        }
+
+        for (var i = 0; i < signals.Count; i++)
+        {
+            var signal = signals[i].signal;
+            for (int y = 0; y < signal.GetLength(0); y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int v = signal[y, x];
+                    image[x, y + signal.GetLength(0) * i + signal.GetLength(0)] =
+                        v == 1 ? colorList[i] : new Rgb24(255, 255, 255);
+                }
+            }
+        }
+
+
+        image.SaveAsBmp(path);
+    }
+
+    public static void SaveMatrixAsBmp2(int[,] matrix, List<(int[,] signal, int errors)> signals, string path)
+    {
+        int height = matrix.GetLength(0);
+        int width = matrix.GetLength(1);
+
+        using var image = new Image<Rgb24>(width, height);
+
+        for (int y = 0; y < matrix.GetLength(0); y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int v = matrix[y, x];
+                image[x, y] = v == 1 ? new Rgb24(0, 0, 0) : new Rgb24(255, 255, 255);
+            }
+        }
+
+        for (var i = 0; i < signals.Count; i++)
+        {
+            var signal = signals[i].signal;
+            for (int y = 0; y < signal.GetLength(0); y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int v = signal[y, x];
+                    image[x, y] =
+                        v == 1 ? colorList[i] : image[x, y];
+                }
+            }
+        }
+
+
+        image.SaveAsBmp(path);
+    }
+
     public static void SaveMatrixAsBmp(int[,] matrix, string path)
     {
         int height = matrix.GetLength(0);
