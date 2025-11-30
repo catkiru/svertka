@@ -1,5 +1,7 @@
-﻿using System.Drawing;
-using System.Drawing.Imaging;
+﻿using System.Drawing.Imaging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using Color = System.Drawing.Color;
 
 namespace MatrixConvolution;
 
@@ -10,17 +12,16 @@ public static class Tools
         int height = matrix.GetLength(0);
         int width = matrix.GetLength(1);
 
-        using var bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+        using var image = new Image<L8>(width, height);
 
         for (int y = 0; y < height; y++)
         for (int x = 0; x < width; x++)
         {
             int v = matrix[y, x];
-            Color color = v == 1 ? Color.Black : Color.White;
-            bmp.SetPixel(x, y, color);
+            image[x, y] = new L8(v == 1 ? (byte)0 : (byte)255);
         }
 
-        bmp.Save(path, ImageFormat.Bmp);
+        image.SaveAsBmp(path);
     }
 
     // Метод для записи матрицы в файл
