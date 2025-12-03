@@ -237,7 +237,10 @@ public static class Tools
 
             if (detected)
             {
-                result.Add((test, errors));
+                if (errors <= 0.5 * matrix.GetLength(0))
+                {
+                    result.Add((test, errors));
+                }
             }
         }
 
